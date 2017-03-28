@@ -9,6 +9,11 @@ export default class Calendar {
 	}
 
 	getLastDateOfMonth(year, month) {
+		if(month < 0){
+			year = year - 1;
+			month = 11;
+		}
+
 		return new Date(new Date(year, month + 1, 1).getTime() - 1000 * 60 * 60 * 24)
 	}
 
@@ -29,9 +34,13 @@ export default class Calendar {
 		month = month > 0 ? month - 1 : new Date().getMonth();
 		let lastDay = this.getLastDateOfMonth(year, month).getDate();
 
+
 		let lastMonth = this.getLastDateOfMonth(year, month - 1).getDate();
 
-		let firstDayWeek = new Date(year, month, 1).getDay() - this.nextDayWeek;
+		let firstDayWeek = new Date(year, month, 1).getDay() - this.nextDayWeek;;
+		if(firstDayWeek < 0)
+			firstDayWeek = 6
+
 		let lastDayWeek = new Date(year, month, lastDay).getDay() - this.nextDayWeek;
 
 		let dayList = []
@@ -40,7 +49,7 @@ export default class Calendar {
 		let nextDay = 1;
 
 		for (let i = 0; i < firstDayWeek; i++) {
-			dayList.unshift({day:lastMonth, active:false, fullDate:new Date(year, month-1, lastMonth)})
+			dayList.unshift({day:lastMonth, active:false, fullDate:new Date(year, month ? 12 : month- 1, lastMonth)})
 			lastMonth--
 			prevDay++
 		}
@@ -68,6 +77,8 @@ export default class Calendar {
 			}
 
 		})
+
+		console.log(days);
 
 		return {weekList: this.weekList, days};
 	}
