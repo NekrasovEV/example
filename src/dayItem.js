@@ -2,15 +2,15 @@ import React, {Component, PropTypes} from 'react';
 
 export default class DayItem extends Component {
 
-	makeDay(currentMonth, styleLink, day){
+	makeDay(currentMonth, styleLink, day, fullDate){
 		if(currentMonth == false)
 			return <p style={styleLink} >{day}</p>
 		else
-			return <a style={styleLink} onClick={() => {this.props.handleClick(day)}}>{day}</a>
+			return <a style={styleLink} onClick={() => {this.props.handleClick(fullDate)}}>{day}</a>
 	}
 
 	render() {
-		let {day, color, currentMonth} = this.props;
+		let {day, color, currentMonth, fullDate} = this.props;
 
 		let style = {
 			backgroundColor: color
@@ -28,7 +28,7 @@ export default class DayItem extends Component {
 
 		return (
 			<div className={"col-xs-1 text-center"} key={day} style={style}>
-				{this.makeDay(currentMonth, styleLink, day)}
+				{this.makeDay(currentMonth, styleLink, day, fullDate)}
 			</div>
 		)
 	}

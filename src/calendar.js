@@ -6,8 +6,8 @@ import Calendar from './lib/calendar';
 
 export default class CalendarTemplate extends Component {
 	state = {
-		activeDay:0,
-		date:null
+		date:null,
+		activeDate:null
 	}
 
 	static defaultValue = {
@@ -22,12 +22,12 @@ export default class CalendarTemplate extends Component {
 	}
 
 	componentWillMount(){
-		this.setState({date:moment(new Date(this.props.date)),
-			activeDay:this.props.date.getDate()});
+		let date = moment(new Date(this.props.date))
+		this.setState({date:date, activeDate:date});
 	}
 
 	renderCalendar() {
-		let month = this.state.date.month();
+		let month = this.state.date.month() + 1;
 		let year =  this.state.date.year();
 		let {weekList, days} = this.calendar.generate({year, month});
 		let result = [];
@@ -41,9 +41,10 @@ export default class CalendarTemplate extends Component {
 		)
 	}
 
-	handleClickDay(day){
-		this.setState({activeDay:day},()=>{
-			this.props.handleSelect({day:this.state.activeDay});
+	handleClickDay(date){
+		console.log(date)
+		this.setState({activeDate:moment(date)},()=>{
+			this.props.handleSelect({day:this.state.activeDate});
 		});
 
 	}
@@ -51,8 +52,6 @@ export default class CalendarTemplate extends Component {
 	handleMonthChange(e){
 		let {name} = e.target;
 		let {date} = this.state;
-
-
 
 		if(name == 'prvMonth'){
 			this.setState({date:date.add(-1, 'months')},()=>{
@@ -65,7 +64,6 @@ export default class CalendarTemplate extends Component {
 			});
 	}
 
-
 	renderHeader({month,year}){
 		return (
 			<div className={"row"}>
@@ -73,7 +71,7 @@ export default class CalendarTemplate extends Component {
 					<a name="prvMonth" onClick={this.handleMonthChange.bind(this)}>&lt;</a>
 				</div>
 				<div className="col-xs-5 text-center">
-					{`${moment.months()[month]} ${year}` }
+					{`${moment.months()[(month-1)]} ${year}` }
 				</div>
 				<div className="col-xs-1 text-right">
 					<a name="nextMonth" onClick={this.handleMonthChange.bind(this)}>&gt;</a>
@@ -91,22 +89,27 @@ export default class CalendarTemplate extends Component {
 						let color = '';
 
 						let {styleDay} = this.props;
+						let fullDate = moment(item.fullDate).format('DD.MM.YYYY');
 
-						if(item.day === this.state.activeDay)
+
+
+						if(fullDate === this.state.activeDate.format('DD.MM.YYYY')){
 							color = '#FF0000';
+						}
 						else
 							color ='#fff';
 
-
-						let fullDate = moment(item.fullDate).format('DD.MM.YYYY');
 						let findDay = styleDay.find((elem)=>{
-							return elem.date == fullDate
+							return elem.date == fullDate;
 						});
+
+						console.log(findDay)
 
 						color = findDay ? findDay.color : color ;
 
 						return <DayItem day={item.day}
 										key={id}
+										fullDate={item.fullDate}
 										handleClick={this.handleClickDay.bind(this)}
 										color={color}
 										currentMonth={item.active}/>})}
